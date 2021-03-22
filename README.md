@@ -1,2 +1,2 @@
 # Text_Editor
-Text editor using implementation
+Text editor Data Stuctures implementation
