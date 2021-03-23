@@ -11,6 +11,41 @@ selected=False
 
 
 
+class FILETXT:
+
+    def __init__(self):
+        self.stack_undo = []
+        self.stack_redo = []
+        pass
+
+    def undo(self):
+        if len(self.stack_undo)==0:
+            return -1
+        temp = self.stack_undo.pop()
+        self.stack_redo.append(temp)
+        return temp
+
+    def redo(self):
+        if len(self.stack_redo)==0:
+            return -1
+        temp = self.stack_redo.pop()
+        self.stack_undo.append(temp)
+        return temp
+
+    def add_stack(self, txt):
+        txt1 = my_text.get(1.0, END)
+        self.stack_undo.append(txt1)
+        print(txt1)
+
+
+
+
+
+
+text1 = FILETXT()
+
+
+
 # Functio to create a new file
 def new_file():
     my_text.delete(1.0, END)
@@ -121,6 +156,30 @@ def paste_text(e):
 
 
 
+def undo(e):
+    temp_text = text1.undo()
+    if temp_text==-1:
+        pass
+    else:
+        print(temp_text)
+        my_text.delete(1.0, END)
+        text_temp = ""
+        for i in text1.stack_undo:
+            text_temp+=i
+        #my_text.insert(1.0, text_temp)
+
+    print("undo")
+
+def redo(e):
+    temp_text = text1.redo()
+    if temp_text == -1:
+        pass
+    else:
+        print(temp_text)
+    print("redo")
+
+
+
 
 
 root = Tk()
@@ -139,7 +198,7 @@ text_scroll.pack(side=RIGHT, fill=Y)
 
 # Create Text Box
 my_text = Text(my_frame, width=97, height=25, font=('Helvetica', 16), selectbackground="blue", selectforeground="white",
-               undo=True,
+               undo=False,
                bg="dark grey",
                fg="white",
                yscrollcommand=text_scroll.set)
@@ -163,8 +222,8 @@ my_menu.add_cascade(label="Edit", menu=edit_menu)
 edit_menu.add_command(label="Cut", command=lambda: cut_text(False))
 edit_menu.add_command(label="Copy", command=lambda: copy_text(False))
 edit_menu.add_command(label="Paste", command=lambda: paste_text(False))
-edit_menu.add_command(label="Redo")
-edit_menu.add_command(label="Undo")
+edit_menu.add_command(label="Redo", command=lambda: redo(False))
+edit_menu.add_command(label="Undo", command=lambda: undo(False))
 
 
 
@@ -182,7 +241,9 @@ text_scroll.config(command=my_text.yview)
 root.bind('<Control-Key-x>', cut_text)
 root.bind('<Control-Key-c>', copy_text)
 root.bind('<Control-Key-v>', paste_text)
-
+root.bind('<Control-Key-z>', undo)
+root.bind('<Control-Key-y>', redo)
+root.bind('<Return>', text1.add_stack)
 
 
 root.mainloop()
