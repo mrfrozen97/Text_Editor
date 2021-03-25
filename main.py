@@ -19,8 +19,11 @@ class FILETXT:
         pass
 
     def undo(self):
+        print(len(self.stack_undo))
         if len(self.stack_undo)==0:
-            return -1
+            print("END")
+            return "$end$"
+
         temp = self.stack_undo.pop()
         self.stack_redo.append(temp)
         return temp
@@ -29,13 +32,22 @@ class FILETXT:
         if len(self.stack_redo)==0:
             return -1
         temp = self.stack_redo.pop()
+
         self.stack_undo.append(temp)
         return temp
 
     def add_stack(self, txt):
         txt1 = my_text.get(1.0, END)
+        #txt1 = txt1.replace(self.get_text(), "")
         self.stack_undo.append(txt1)
-        print(txt1)
+        print(self.stack_undo)
+
+    def get_text(self):
+
+        text1 = ""
+        for i in self.stack_undo:
+            text1+=i
+        return text1
 
 
 
@@ -53,6 +65,8 @@ def new_file():
     status_bar.config(text="New File      ")
     global open_status_name
     open_status_name = False
+    text1.stack_undo =[]
+    text1.stack_undo= []
 
 
 
@@ -158,25 +172,27 @@ def paste_text(e):
 
 def undo(e):
     temp_text = text1.undo()
-    if temp_text==-1:
-        pass
-    else:
-        print(temp_text)
+    print(temp_text)
+    if temp_text=="$end$":
         my_text.delete(1.0, END)
-        text_temp = ""
-        for i in text1.stack_undo:
-            text_temp+=i
-        #my_text.insert(1.0, text_temp)
+    else:
+        #print(temp_text)
+        my_text.delete(1.0, END)
+        my_text.insert(1.0, temp_text)
 
-    print("undo")
+
 
 def redo(e):
     temp_text = text1.redo()
+    #print(temp_text)
     if temp_text == -1:
-        pass
+        my_text.delete(1.0, END)
+
     else:
-        print(temp_text)
-    print("redo")
+        #print(temp_text)
+        my_text.delete(1.0, END)
+        my_text.insert(1.0, temp_text)
+
 
 
 
