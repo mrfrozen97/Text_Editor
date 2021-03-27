@@ -1,13 +1,86 @@
 from tkinter import *
 from tkinter import filedialog
 from tkinter import font
-
+import pandas as pd
 
 global open_status_name
 open_status_name = False
 
 global selected
 selected=False
+
+
+
+
+
+class Node:
+
+    def __init__(self, value):
+
+        self.value = value
+        self.children = []
+        self.end = False
+
+
+    def add_child(self, child):
+
+        self.children.append(child)
+
+    def get_children(self):
+        return self.children
+
+    def get_value(self):
+        return self.value
+
+    def set_end(self):
+        self.end = True
+
+
+
+class Tries:
+
+    def __init__(self):
+
+        self.root = Node('#')
+        self.search_list = []
+
+    def add_word(self, word):
+        curr = self.root
+        for i in word:
+            cur_list = [abc.value for abc in curr.get_children()]
+            if i in cur_list:
+                curr = curr.get_children()[cur_list.index(i)]
+            else:
+                temp = Node(i)
+                curr.add_child(temp)
+                curr = temp
+        curr.set_end()
+
+    def print_trie(self, root1):
+        self.recurssion("", root1)
+
+    def recurssion(self,str1, node):
+
+        if node.end:
+            self.search_list.append(str1)
+            #print(str1)
+       # print([ae.value for ae in node.children])
+        for i in node.get_children():
+            self.recurssion(str1+i.value, i)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -198,6 +271,67 @@ def redo(e):
 
 
 
+def recomendation(a):
+    text = "abc"
+    text_search = my_text.get(1.0, END).split()
+    if len(text_search)>0:
+        text_search=text_search[-1]
+    str2 = ""
+    abc = tree.root
+    flag = False
+    tree.search_list = []
+    for i in text_search:
+        curr_list = [j.value for j in abc.get_children()]
+        # print(curr_list)
+        if i in curr_list:
+            abc = abc.get_children()[curr_list.index(i)]
+            str2 += abc.value
+        else:
+            flag = True
+            break
+
+
+    tree.recurssion(str2, abc)
+    text=""
+    for i in tree.search_list[:min(12, len(tree.search_list))]:
+        text+=(i+"\n")
+
+    label = Label(root, text=text, bg='#80c1ff', font=30, anchor='nw', justify='left', bd=10)
+    label.place(relx=0.83, rely=0.0061, relwidth=0.15, relheight=0.45)
+
+
+
+
+
+
+
+words = []
+words_list = pd.read_csv("dictionary.csv")
+for i in words_list['A'][:]:
+    #print(i)
+    j = str(i)
+
+    words.append(j)
+
+
+
+
+tree = Tries()
+for i in words:
+   tree.add_word(i)
+
+
+
+
+
+
+
+
+
+
+
+
+
 root = Tk()
 root.title("Noob Text Editor")
 root.geometry("1200x640")
@@ -260,6 +394,8 @@ root.bind('<Control-Key-v>', paste_text)
 root.bind('<Control-Key-z>', undo)
 root.bind('<Control-Key-y>', redo)
 root.bind('<Return>', text1.add_stack)
+root.bind_all('<Key>', recomendation)
+
 
 
 root.mainloop()
