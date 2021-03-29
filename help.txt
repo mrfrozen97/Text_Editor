@@ -1,0 +1,10 @@
+Text Editor\n\n
+#Shortcuts\n
+Ctrl + C = Copy selected text
+Ctrl + V = Paste selected text
+Ctrl + X = Cut selected text
+Ctrl + y = Undo text editor
+Ctrl + Z = Redo text editor
+Ctrl + A = Select All
+Ctrl + H = Help tab
+
